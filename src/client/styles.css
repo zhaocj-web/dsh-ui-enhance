@@ -1,29 +1,6 @@
-[data-slot='sidebar.footer.action'] .mrfw-triggerRow {
-  display: none !important;
-}
-
 [data-sidebar-workspace-header] {
   cursor: pointer;
   user-select: none;
-}
-/* 覆盖宿主按钮的悬停配色，与会话标题行保持一致。 */
-[data-sidebar-workspace-header] button,
-[data-sidebar-workspace-header] button:hover {
-  background: transparent !important;
-  color: var(--dsw-alias-label-tertiary, #8a8a8a) !important;
-}
-/* 保留按钮占位及 Tab 焦点，避免显隐时标题跳动。 */
-[data-sidebar-workspace-header] button,
-[data-dsh-collapse-heading] [data-dsh-collapse-new] {
-  opacity: 0;
-  pointer-events: none;
-}
-[data-sidebar-workspace-header]:hover button,
-[data-sidebar-workspace-header]:focus-within button,
-[data-dsh-collapse-heading]:hover [data-dsh-collapse-new],
-[data-dsh-collapse-heading]:focus-within [data-dsh-collapse-new] {
-  opacity: 1;
-  pointer-events: auto;
 }
 [data-dsh-collapse-arrow],
 [data-dsh-collapse-toggle]::after {

@@ -99,4 +99,25 @@ test('总开关默认开启、持久保存，取消订阅后不再通知', async
   settings.setEnabled(true);
   assert.equal(changes, 1);
   assert.equal(load().getEnabled(), true);
+  assert.equal(settings.isModuleEnabled('projects'), true);
+  settings.setModuleEnabled('projects', false);
+  assert.equal(settings.isModuleEnabled('projects'), false);
+  assert.equal(settings.isModuleEnabled('folderOpen'), false);
+  assert.equal(settings.getModules().folderOpen, true);
+  assert.equal(settings.isModuleEnabled('copy'), true);
+  assert.equal(load().getModules().projects, false);
+  settings.setEnabled(false);
+  for (const key of Object.keys(settings.getModules()))
+    assert.equal(settings.isModuleEnabled(key), false);
+  settings.setEnabled(true);
+  assert.equal(settings.isModuleEnabled('projects'), false);
+  settings.setModuleEnabled('projects', true);
+  assert.equal(settings.isModuleEnabled('folderOpen'), true);
+  settings.setModuleEnabled('folderOpen', false);
+  assert.equal(settings.isModuleEnabled('projects'), true);
+  values.set('dsh-ui-enhance:modules', '{bad json');
+  assert.equal(load().getModules().projects, true);
+  values.set('dsh-ui-enhance:modules', JSON.stringify({ copy: false, sidebar: 'wrong' }));
+  assert.equal(load().getModules().copy, false);
+  assert.equal(load().getModules().sidebar, true);
 });

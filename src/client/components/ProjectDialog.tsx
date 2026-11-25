@@ -1,12 +1,16 @@
 import React from 'react';
 import { FormItem, Input } from './Form';
 import { ActionButton } from './Controls';
+import { FolderOpenMenu } from './FolderOpenMenu';
+import type { FolderOpenTarget } from './FolderOpenMenu';
 import { DialogHeader } from './DialogHeader';
 import { createProject, loadProject, updateProject } from '../services/projects';
 import type { ProjectServices, ProjectProgress, ProjectEdit } from '../services/projects';
 import { installProjectDialog } from '../features/project-dialog';
 import { installProjectMenu } from '../features/project-menu';
-import { getEnabled, subscribeEnabled } from '../shared/settings';
+import { FOLDER_APPS, folderApplications, openFolder } from '../services/folder-open';
+import type { FolderApp } from '../services/folder-open';
+import { isModuleEnabled, subscribeEnabled } from '../shared/settings';
 
 type FolderIconProps = { add?: boolean };
 function FolderIcon(props: FolderIconProps) {
@@ -49,15 +53,24 @@ export function ProjectDialog(props: ProjectDialogProps) {
   const [paths, setPaths] = React.useState<string[]>([]);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
+  const [apps, setApps] = React.useState<string[] | null>(null);
+  const [folderMenu, setFolderMenu] = React.useState<FolderOpenTarget | null>(null);
+  const [openingFolder, setOpeningFolder] = React.useState(false);
+  const openingRef = React.useRef(false);
+  const [appError, setAppError] = React.useState('');
   const [editing, setEditing] = React.useState(false);
   const [edit, setEdit] = React.useState<ProjectEdit | null>(null);
-  const enabled = React.useSyncExternalStore(subscribeEnabled, getEnabled);
+  const enabled = React.useSyncExternalStore(subscribeEnabled, () => isModuleEnabled('projects'));
+  const folderOpenEnabled = React.useSyncExternalStore(subscribeEnabled, () =>
+    isModuleEnabled('folderOpen'),
+  );
   React.useEffect(() => {
     alive.current = true;
     const openDialog = async (workspaceId?: string) => {
       if (busyRef.current) return;
       trigger.current =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setFolderMenu(null);
       setTitle('');
       setPaths([]);
       setError('');
@@ -95,10 +108,52 @@ export function ProjectDialog(props: ProjectDialogProps) {
   }, []);
   React.useEffect(() => {
     if (open && enabled) dialog.current?.showModal();
-    else dialog.current?.close();
+    else {
+      dialog.current?.close();
+      if (!enabled) {
+        setOpen(false);
+        setFolderMenu(null);
+      }
+    }
   }, [open, enabled]);
+  React.useEffect(() => {
+    if (!open || !enabled || !folderOpenEnabled) {
+      setFolderMenu(null);
+      return;
+    }
+    const controller = new AbortController();
+    setApps(null);
+    setAppError('');
+    void folderApplications(controller.signal).then(
+      (available) => {
+        if (!controller.signal.aborted) setApps(available);
+      },
+      (reason) => {
+        if (!controller.signal.aborted) {
+          setApps([]);
+          setAppError(reason instanceof Error ? reason.message : String(reason));
+        }
+      },
+    );
+    return () => controller.abort();
+  }, [open, enabled, folderOpenEnabled]);
+  const launchFolder = async (path: string, app: FolderApp) => {
+    if (!isModuleEnabled('folderOpen') || openingRef.current || busyRef.current) return;
+    openingRef.current = true;
+    setOpeningFolder(true);
+    setAppError('');
+    try {
+      await openFolder(path, app);
+    } catch (reason) {
+      if (alive.current) setAppError(reason instanceof Error ? reason.message : String(reason));
+    } finally {
+      openingRef.current = false;
+      if (alive.current) setOpeningFolder(false);
+    }
+  };
   const close = () => {
     if (busyRef.current) return;
+    setFolderMenu(null);
     setOpen(false);
     trigger.current?.focus();
   };
@@ -205,13 +260,44 @@ export function ProjectDialog(props: ProjectDialogProps) {
                       <FolderIcon />
                       <span>{path.split(/[\\/]/).filter(Boolean).at(-1) || path}</span>
                     </span>
+                    {folderOpenEnabled && (
+                      <button
+                        type="button"
+                        className="due-project-open-with"
+                        aria-label={`选择 ${path} 的打开方式`}
+                        title="在应用中打开"
+                        aria-haspopup="menu"
+                        aria-expanded={folderMenu?.path === path}
+                        disabled={
+                          busy ||
+                          openingFolder ||
+                          !apps?.some((id) => FOLDER_APPS.some((app) => app.id === id))
+                        }
+                        onClick={(event) => {
+                          const rect = event.currentTarget.getBoundingClientRect();
+                          setFolderMenu({ path, x: rect.right, y: rect.bottom + 4 });
+                        }}
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          aria-hidden="true"
+                        >
+                          <path d="M12 15V3m-4 4 4-4 4 4M7 10H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2" />
+                        </svg>
+                      </button>
+                    )}
                     {index === 0 ? (
                       <span className="due-project-root-badge">主要</span>
-                    ) : (
+                    ) : !editing ? (
                       <ActionButton
                         label="设为主要"
                         className="due-project-set-primary"
-                        disabled={locked || editing}
+                        disabled={locked}
                         onClick={() =>
                           setPaths((previous) => [
                             path,
@@ -219,7 +305,7 @@ export function ProjectDialog(props: ProjectDialogProps) {
                           ])
                         }
                       />
-                    )}
+                    ) : null}
                     <button
                       type="button"
                       className="due-project-remove"
@@ -259,6 +345,11 @@ export function ProjectDialog(props: ProjectDialogProps) {
               </ul>
             </div>
           </section>
+          {appError && (
+            <p role="alert" className="due-project-error">
+              {appError}
+            </p>
+          )}
           {error && (
             <p role="alert" className="due-project-error">
               {error}
@@ -290,6 +381,14 @@ export function ProjectDialog(props: ProjectDialogProps) {
           />
         </footer>
       </form>
+      {open && folderOpenEnabled && folderMenu && apps && (
+        <FolderOpenMenu
+          target={folderMenu}
+          apps={apps}
+          onClose={() => setFolderMenu(null)}
+          onSelect={launchFolder}
+        />
+      )}
     </dialog>
   );
 }

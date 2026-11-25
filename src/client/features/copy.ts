@@ -1,5 +1,5 @@
 import { isZh } from '../shared/browser';
-import { getEnabled } from '../shared/settings';
+import { isModuleEnabled } from '../shared/settings';
 type Rules = Record<string, string>;
 type CopyRecord = { original: string; applied: string };
 const RULES_KEY = 'dsh-ui-titles:renames:v1';
@@ -169,7 +169,7 @@ function restoreCopy() {
 }
 
 function applyCopy() {
-  if (!getEnabled() || !isZh()) {
+  if (!isModuleEnabled('copy') || !isZh()) {
     restoreCopy();
     return;
   }

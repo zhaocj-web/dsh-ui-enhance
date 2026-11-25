@@ -561,3 +561,78 @@
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
+
+.due-project-open-with {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+.due-project-folders li:hover .due-project-open-with,
+.due-project-folders li:focus-within .due-project-open-with,
+.due-project-open-with[aria-expanded='true'] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.due-project-open-with:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+}
+.due-project-open-with:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.due-folder-app-menu {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: 210px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 8px 32px #0002;
+}
+.due-folder-app-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.due-folder-app-menu button:hover,
+.due-folder-app-menu button:focus-visible {
+  background: var(--hover);
+}
+.due-folder-app-menu button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+.due-folder-app-menu img {
+  flex: none;
+  object-fit: contain;
+}

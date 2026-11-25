@@ -1,9 +1,9 @@
-import { getEnabled } from '../shared/settings';
+import { isModuleEnabled } from '../shared/settings';
 
 /** 只接管项目标题工具栏末尾的新增按钮，不拦截搜索和视图菜单。 */
 export function installProjectDialog(open: () => void) {
   const onClick = (event: MouseEvent) => {
-    if (!getEnabled() || !(event.target instanceof Element)) return;
+    if (!isModuleEnabled('projects') || !(event.target instanceof Element)) return;
     const button = event.target.closest('button');
     const actions = button?.closest('[data-sidebar-workspace-header] [class*="headerActions"]');
     if (!button || !actions) return;

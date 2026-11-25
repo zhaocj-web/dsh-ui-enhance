@@ -6,8 +6,9 @@ import { installFold } from './features/sidebar';
 import type { ClientContext } from './types';
 import { isZh } from './shared/browser';
 import css from './styles.css';
+import hoverCss from './hover-actions.css';
 import settingsCss from './settings.css';
-import { getEnabled, subscribeEnabled } from './shared/settings';
+import { isModuleEnabled, subscribeEnabled } from './shared/settings';
 export const name = 'dsh-ui-enhance';
 export const inject = [
   'slots',
@@ -27,13 +28,16 @@ export function apply(context: ClientContext): void {
     disposeFeatures?.();
     disposeFeatures = undefined;
     style.textContent = settingsCss;
-    if (!getEnabled()) return;
-    style.textContent += css;
-    const disposeCopy = installCopy();
-    const disposeFold = installFold();
+    if (isModuleEnabled('sidebar')) style.textContent += css;
+    if (isModuleEnabled('hoverActions')) style.textContent += hoverCss;
+    if (isModuleEnabled('hideWorkspaceButton'))
+      style.textContent +=
+        "[data-slot='sidebar.footer.action'] .mrfw-triggerRow { display: none !important; }";
+    const disposeCopy = isModuleEnabled('copy') ? installCopy() : undefined;
+    const disposeFold = isModuleEnabled('sidebar') ? installFold() : undefined;
     disposeFeatures = () => {
-      disposeCopy();
-      disposeFold();
+      disposeCopy?.();
+      disposeFold?.();
     };
   };
   syncEnabled();

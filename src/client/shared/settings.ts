@@ -28,3 +28,41 @@ export function setEnabled(value: boolean) {
   }
   listeners.forEach((listener) => listener());
 }
+
+const MODULES_KEY = 'dsh-ui-enhance:modules';
+const DEFAULT_MODULES = {
+  copy: true,
+  sidebar: true,
+  hoverActions: true,
+  projects: true,
+  folderOpen: true,
+  hideWorkspaceButton: true,
+};
+export type EnhancementModule = keyof typeof DEFAULT_MODULES;
+function loadModules(): typeof DEFAULT_MODULES {
+  const result = { ...DEFAULT_MODULES };
+  try {
+    const saved = JSON.parse(localStorage.getItem(MODULES_KEY) ?? '{}');
+    for (const key of Object.keys(result) as EnhancementModule[]) {
+      if (typeof saved?.[key] === 'boolean') result[key] = saved[key];
+    }
+  } catch {
+    /* 无效或不可用的存储使用默认设置。 */
+  }
+  return result;
+}
+let modules = loadModules();
+export const getModules = () => modules;
+export function isModuleEnabled(key: EnhancementModule): boolean {
+  return enabled && modules[key] && (key !== 'folderOpen' || modules.projects);
+}
+export function setModuleEnabled(key: EnhancementModule, value: boolean) {
+  if (modules[key] === value) return;
+  modules = { ...modules, [key]: value };
+  try {
+    localStorage.setItem(MODULES_KEY, JSON.stringify(modules));
+  } catch {
+    /* 本次会话中仍然生效。 */
+  }
+  listeners.forEach((listener) => listener());
+}

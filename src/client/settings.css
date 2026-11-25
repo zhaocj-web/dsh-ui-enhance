@@ -1,0 +1,563 @@
+.due-ui {
+  --font-caption: 12px;
+  --font-ui: 13px;
+  --font-input: 13.5px;
+  --font-body: 14px;
+  --font-title: 20px;
+  --control-height: 34px;
+  --control-radius: 10px;
+  --field-gap: 8px;
+  --ink: var(--dsw-alias-label-primary, #202124);
+  --muted: var(--dsw-alias-label-tertiary, #777);
+  --line: var(--dsw-alias-border-l2, #e5e5e5);
+  --strong: var(--dsw-alias-border-l4, #ccc);
+  --bg: var(--dsw-alias-bg-base, #fafafa);
+  --card: var(--dsw-alias-bg-layer-2, #fff);
+  --hover: var(--dsw-alias-interactive-bg-hover, #eee);
+  --primary: var(--dsw-alias-button-primary-fill, #222);
+  --on: var(--dsw-alias-label-primary-inverted, #fff);
+}
+.due-form-item {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  min-width: 0;
+  gap: var(--field-gap);
+  font-size: var(--font-ui);
+}
+.due-label {
+  font-size: var(--font-ui);
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--dsw-alias-label-secondary, var(--ink));
+}
+.due-help {
+  font-size: var(--font-caption);
+  color: var(--muted);
+  font-weight: 400;
+}
+.due-control {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--strong);
+  border-radius: var(--control-radius);
+  background: var(--card);
+  font-size: var(--font-body);
+  line-height: 1.62963;
+}
+/* 输入控件使用中性边框表达聚焦，不显示浏览器的蓝色外框。 */
+.due-ui .due-control:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: none;
+}
+.due-input {
+  height: var(--control-height);
+}
+.due-textarea {
+  min-height: 104px;
+  resize: vertical;
+  line-height: 1.62963;
+}
+.due-control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.due-control::placeholder {
+  color: var(--dsw-alias-label-caption, #a3a8b0);
+  opacity: 1;
+}
+.due-control[aria-invalid='true'] {
+  border-color: var(--dsw-alias-status-error, #ba4538);
+}
+.due-control[aria-invalid='true']:focus {
+  box-shadow: inset 0 0 0 1px var(--dsw-alias-status-error, #ba4538);
+}
+.due-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--strong);
+  background: var(--card);
+  border-radius: 12px;
+  min-height: var(--control-height);
+  padding: 7px 14px;
+  font-size: var(--font-ui);
+  line-height: 1.53846;
+  white-space: nowrap;
+}
+.due-btn:hover {
+  background: var(--hover);
+}
+.due-btn-primary {
+  background: var(--primary);
+  color: var(--on) !important;
+  border-color: transparent;
+}
+.due-btn-primary:hover {
+  background: var(--dsw-alias-button-primary-hover, var(--primary));
+}
+.due-form-message {
+  font-size: var(--font-caption);
+  line-height: 1.6;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.due-project-dialog {
+  height: fit-content;
+  max-width: calc(100vw - 40px);
+  min-height: 0;
+  max-height: calc(100dvh - 48px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 16px 64px #0002;
+  overflow: hidden;
+}
+.due-project-dialog::backdrop {
+  background: #0004;
+}
+.due-project-dialog {
+  box-sizing: border-box;
+  margin: auto;
+  font-family: var(--dsw-font-family, system-ui);
+}
+.due-project-form {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  max-height: calc(100dvh - 52px);
+  margin: 0;
+  min-height: 0;
+}
+.due-project-body {
+  flex: 0 1 auto;
+  align-content: start;
+  scrollbar-gutter: stable;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 4px 24px 12px;
+}
+.due-project-actions {
+  flex: 0 0 auto;
+}
+.due-control {
+  box-sizing: border-box;
+  color: var(--ink);
+  font-family: inherit;
+}
+.due-form-message {
+  margin: 0;
+}
+.due-form-message.due-error {
+  color: var(--dsw-alias-status-error, #ba4538);
+}
+.due-form-message.due-warning {
+  color: var(--dsw-alias-status-warning, #d97706);
+}
+.due-btn {
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+}
+.due-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.due-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.due-enable-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  cursor: pointer;
+}
+.due-enable-title {
+  display: block;
+  font-size: 14px;
+  color: var(--dsw-alias-label-primary);
+}
+.due-enable-help {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+}
+.due-switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  margin: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-layer-2);
+  cursor: pointer;
+}
+.due-switch::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px #0003;
+}
+.due-switch:checked {
+  background: #34a853;
+  border-color: #34a853;
+}
+.due-switch:checked::before {
+  left: 18px;
+}
+.due-switch:focus-visible {
+  outline: 2px solid var(--dsw-alias-label-secondary);
+  outline-offset: 3px;
+}
+
+.due-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.due-project-name {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  border: 1px solid var(--strong);
+  border-radius: var(--control-radius);
+  overflow: hidden;
+  background: var(--card);
+}
+.due-project-name:focus-within {
+  border-color: var(--ink);
+}
+.due-project-name-icon {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  flex: 0 0 38px;
+  color: var(--muted);
+  border-right: 1px solid var(--line);
+}
+.due-project-name .due-input {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 14px;
+  padding: 0 10px;
+}
+.due-project-folders {
+  margin-top: 14px;
+}
+.due-project-folders h3 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.due-project-source-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 100px;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: var(--card);
+}
+.due-project-source-caption {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.due-project-add {
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  min-height: 30px;
+  padding: 4px 12px;
+  background: var(--hover);
+  font-size: 13px;
+  font-weight: 600;
+}
+.due-project-folders ul {
+  align-self: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.due-project-folders ul:empty {
+  display: none;
+}
+.due-project-folders li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.due-project-folders li span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.due-project-folders li button {
+  flex: none;
+}
+.due-project-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 24px 18px;
+}
+.due-project-cancel {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+.due-project-error {
+  font-size: 13px;
+  color: var(--dsw-alias-label-error, #d9534f);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .due-project-actions {
+    gap: 12px;
+  }
+}
+
+.due-project-folders-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.due-project-count {
+  font-size: 12px;
+  color: var(--muted);
+}
+.due-project-source-card-filled {
+  display: block;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.due-project-source-card-filled ul {
+  max-height: 340px;
+  overflow-y: auto;
+}
+.due-project-source-card-filled li {
+  min-height: 52px;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  gap: 10px;
+}
+.due-project-source-card-filled li:first-child {
+  border-top: 0;
+}
+.due-project-folder-name {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+.due-project-folder-name svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
+}
+.due-project-folder-name > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.due-project-root-badge {
+  flex: none;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.due-project-set-primary {
+  opacity: 0;
+  pointer-events: none;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 0;
+  background: var(--hover);
+  font-size: 13px;
+}
+.due-project-folders li:hover .due-project-set-primary,
+.due-project-folders li:focus-within .due-project-set-primary {
+  opacity: 1;
+  pointer-events: auto;
+}
+.due-project-remove {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.due-project-remove:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--hover);
+}
+.due-project-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.due-project-remove:focus-visible,
+.due-project-add-row button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.due-project-source-card-filled .due-project-add-row {
+  padding: 0;
+}
+.due-project-add-row button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.due-project-add-row button svg {
+  color: var(--muted);
+}
+.due-project-add-row button:hover:not(:disabled) {
+  background: var(--hover);
+}
+.due-project-add-row button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.due-project-error {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  line-height: 1.6;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .due-project-dialog {
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 32px);
+    border-radius: 16px;
+  }
+  .due-project-body {
+    padding: 4px 18px 10px;
+  }
+  .due-project-actions {
+    padding: 8px 18px 16px;
+  }
+}
+
+.due-dialog-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 16px;
+  padding: 18px 24px 10px;
+}
+.due-dialog-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.due-dialog-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.due-dialog-header .due-help {
+  margin: 6px 0 0;
+}
+.due-dialog-header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+}
+.due-dialog-header-actions .due-btn {
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: var(--font-caption);
+}
+.due-settings-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 34px;
+  block-size: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 24px;
+}
+.due-settings-trigger:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+.due-settings-trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.due-settings-trigger:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
